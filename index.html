@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>방사광 가속기와 AI로 읽는 2000년 전 두루마리</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css" />
+<style>
+:root{
+  --bg:#15120f; --bg-2:#1e1916; --bg-3:#241e18;
+  --ink:#ece7df; --muted:#9a948e; --faint:rgba(236,231,223,.5);
+  --line:rgba(236,231,223,.13); --line-2:rgba(236,231,223,.28);
+  --accent:oklch(.74 .14 305); --accent-2:oklch(.82 .10 305);
+  --accent-soft:oklch(.74 .14 305 / .16);
+  --ember:oklch(.74 .14 55); --ember-soft:oklch(.74 .14 55 / .16);
+
+  --type-display:96px; --type-title:72px; --type-subtitle:44px;
+  --type-lead:40px; --type-body:36px; --type-small:26px;
+  --type-eyebrow:26px; --type-bignum:188px;
+
+  --pad-x:112px; --pad-top:92px; --pad-bottom:80px;
+  --gap-title:42px; --gap-item:26px;
+
+  --sans:"Pretendard Variable",Pretendard,system-ui,sans-serif;
+  --serif:"Pretendard Variable",Pretendard,system-ui,sans-serif;
+  --mono:"Pretendard Variable",Pretendard,system-ui,sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;background:#000;}
+deck-stage:not(:defined){visibility:hidden;}
+
+/* ---------- slide frame ---------- */
+.slide{
+  display:flex; flex-direction:column;
+  padding:var(--pad-top) var(--pad-x) var(--pad-bottom);
+  background:
+    radial-gradient(120% 90% at 100% 0%, rgba(224,149,79,.05), transparent 55%),
+    radial-gradient(120% 110% at 0% 100%, rgba(181,126,220,.05), transparent 55%),
+    var(--bg);
+  color:var(--ink);
+  font-family:var(--sans);
+  overflow:hidden;
+}
+.head{display:flex; align-items:center; gap:26px; flex-shrink:0;}
+.eyb{font-family:var(--mono); font-size:var(--type-eyebrow); letter-spacing:.16em;
+  text-transform:uppercase; color:var(--muted); white-space:nowrap;}
+.eyb .num{color:var(--accent); font-weight:600;}
+.rule{flex:1; height:1px; background:var(--line);}
+
+.main{flex:1; min-height:0; display:flex; flex-direction:column; justify-content:center;}
+.title{font-weight:700; font-size:var(--type-title); line-height:1.1; letter-spacing:-.015em; margin:0;}
+.title .hl{color:var(--accent);}
+.lead{font-size:var(--type-lead); line-height:1.5; color:var(--faint); font-weight:400; max-width:24em; margin:0;}
+
+.foot{display:flex; justify-content:space-between; align-items:center; gap:30px;
+  flex-shrink:0; border-top:1px solid var(--line); padding-top:20px;
+  font-family:var(--mono); font-size:var(--type-small); color:var(--muted);}
+.foot .src{overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.foot .pg{color:var(--accent); white-space:nowrap; letter-spacing:.1em;}
+
+/* mini pipeline strip */
+.steps{display:flex; gap:14px; align-items:center; flex-shrink:0;}
+.steps .st{display:flex; align-items:center; gap:10px; font-family:var(--mono);
+  font-size:var(--type-small); color:var(--muted); opacity:.5;}
+.steps .st .dot{width:12px; height:12px; border-radius:50%; border:1.5px solid var(--muted);}
+.steps .st.on{opacity:1; color:var(--ink);}
+.steps .st.on .dot{background:var(--accent); border-color:var(--accent);
+  box-shadow:0 0 0 5px var(--accent-soft);}
+.steps .sep{width:22px; height:1px; background:var(--line);}
+
+/* lists */
+.facts{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:var(--gap-item);}
+.facts li{display:flex; gap:22px; align-items:flex-start; font-size:var(--type-subtitle); font-weight:600; line-height:1.3;}
+.facts li .k{font-family:var(--mono); font-size:var(--type-small); color:var(--accent);
+  padding-top:.5em; min-width:2.2em; letter-spacing:.05em;}
+.facts li .sub{display:block; font-size:var(--type-small); font-weight:400; color:var(--faint); margin-top:8px; letter-spacing:0;}
+
+.chips{display:flex; gap:18px;}
+.chip{border:1px solid var(--line-2); border-radius:999px; padding:14px 26px;
+  font-size:var(--type-small); color:var(--ink); font-weight:500; white-space:nowrap;}
+.chip b{color:var(--accent); font-weight:600;}
+
+/* generic two-col */
+.cols{display:grid; gap:64px; align-items:center; flex:1; min-height:0;}
+
+/* svg diagram helpers */
+.dg{display:block; width:100%; height:100%;}
+.s-ink{stroke:rgba(236,231,223,.7);} .s-mut{stroke:var(--muted);}
+.s-acc{stroke:var(--accent);} .s-emb{stroke:var(--ember);} .s-line{stroke:var(--line-2);}
+.f-ink{fill:var(--ink);} .f-acc{fill:var(--accent);} .f-emb{fill:var(--ember);}
+.f-mut{fill:var(--muted);} .f-faint{fill:var(--faint);}
+.dg text{font-family:var(--mono); fill:var(--muted); font-size:24px;}
+.dg .lbl{font-size:24px;} .dg .lblk{font-family:var(--sans); fill:var(--ink); font-weight:600;}
+
+/* ---------- TITLE ---------- */
+.cover{padding:0;}
+.cover .wrap{position:relative; flex:1; display:flex; flex-direction:column;
+  justify-content:center; padding:var(--pad-top) var(--pad-x);}
+.cover .glow{position:absolute; inset:0; pointer-events:none;
+  background:
+    radial-gradient(50% 60% at 78% 32%, rgba(224,149,79,.16), transparent 60%),
+    radial-gradient(60% 70% at 18% 88%, rgba(181,126,220,.14), transparent 60%);}
+.cover .ash{position:absolute; inset:0; opacity:.5; pointer-events:none;
+  background-image:radial-gradient(rgba(236,231,223,.05) 1px, transparent 1.6px);
+  background-size:46px 46px; mask-image:radial-gradient(80% 80% at 70% 40%, #000, transparent 75%);}
+.cover .greek-bg{position:absolute; right:-2%; top:6%; font-family:var(--serif);
+  font-size:300px; line-height:.9; color:rgba(181,126,220,.07); letter-spacing:.02em;
+  font-style:italic; pointer-events:none; user-select:none;}
+.cover .kicker{font-family:var(--mono); font-size:var(--type-small); letter-spacing:.32em;
+  text-transform:uppercase; color:var(--ember); margin-bottom:34px;}
+.cover h1{font-weight:800; font-size:var(--type-display); line-height:1.04; letter-spacing:-.02em; margin:0; max-width:16em;}
+.cover .sub{font-size:var(--type-subtitle); font-weight:400; color:var(--faint); margin:34px 0 0; max-width:26em; line-height:1.4;}
+.cover .meta{position:absolute; left:var(--pad-x); right:var(--pad-x); bottom:var(--pad-bottom);
+  display:flex; justify-content:space-between; align-items:center;
+  font-family:var(--mono); font-size:var(--type-small); color:var(--muted);
+  border-top:1px solid var(--line); padding-top:22px;}
+
+/* image slot */
+image-slot{display:block; border:1px solid var(--line-2); background:var(--bg-2);}
+
+/* ---------- result slide ---------- */
+.porph{font-family:var(--serif); font-weight:600; letter-spacing:.04em;
+  font-size:152px; line-height:1; color:var(--accent-2);
+  text-shadow:0 0 60px var(--accent-soft);}
+.porph-sub{font-family:var(--serif); font-style:italic; font-size:var(--type-subtitle); color:var(--faint);}
+.tl{display:grid; grid-template-columns:repeat(3,1fr); gap:0; border-top:1px solid var(--line-2); margin-top:8px;}
+.tl .it{padding:30px 34px 0; border-left:1px solid var(--line); position:relative;}
+.tl .it:first-child{border-left:none;}
+.tl .it::before{content:""; position:absolute; top:-7px; left:34px; width:13px; height:13px;
+  border-radius:50%; background:var(--accent);}
+.tl .yr{font-family:var(--mono); font-size:var(--type-small); color:var(--accent); letter-spacing:.08em;}
+.tl .ev{font-size:30px; font-weight:600; margin-top:14px; line-height:1.3;}
+.tl .ev small{display:block; font-size:var(--type-small); font-weight:400; color:var(--faint); margin-top:8px;}
+
+/* closing chain */
+.chain{display:flex; align-items:center; justify-content:center; gap:8px; flex-wrap:wrap;}
+.chain .node{font-family:var(--sans); font-weight:600; font-size:30px; color:var(--ink);
+  border:1px solid var(--line-2); border-radius:14px; padding:22px 30px; text-align:center; background:var(--bg-2); flex:0 0 auto;}
+.chain .node small{display:block; font-family:var(--mono); font-size:24px; color:var(--muted); margin-top:8px; font-weight:400; white-space:nowrap;}
+.chain .node.fin{border-color:var(--accent); color:var(--accent-2); font-family:var(--serif); font-size:40px; font-weight:600; letter-spacing:.03em;}
+.chain .arr{color:var(--ember); font-size:30px;}
+.kv{display:flex; gap:60px; justify-content:center; margin-top:6px;}
+.kv .x{font-size:var(--type-lead); font-weight:600;}
+.kv .x b{color:var(--accent);} .kv .x .o{color:var(--ember);}
+.closing{font-size:var(--type-lead); line-height:1.55; color:var(--faint); font-weight:500;
+  text-align:center; max-width:30em; margin:48px auto 0; text-wrap:pretty;}
+.closing .hl{color:var(--accent-2); font-weight:600;}
+
+/* animation */
+.anim{opacity:1;}
+@media (prefers-reduced-motion:no-preference){
+  [data-deck-active] .anim{animation:rise .6s both cubic-bezier(.2,.7,.2,1);
+    animation-delay:calc(var(--i,0)*85ms);}
+  @keyframes rise{from{opacity:0; transform:translateY(20px);} to{opacity:1; transform:none;}}
+  [data-deck-active] .draw{stroke-dasharray:var(--len,600); stroke-dashoffset:var(--len,600);
+    animation:draw 1s .25s both ease;}
+  @keyframes draw{to{stroke-dashoffset:0;}}
+}
+/* Fallback: if the document timeline is frozen (background tab / capture tools),
+   CSS entrance animations can stick at the hidden from-state. Reveal resting state. */
+html.reveal-now .anim{animation:none !important; opacity:1 !important; transform:none !important;}
+html.reveal-now .draw{stroke-dasharray:none !important; stroke-dashoffset:0 !important;}
+
+@media print{
+  *,*::before,*::after{animation-delay:-99s !important; animation-duration:.001s !important;}
+}
+</style>
+</head>
+<body>
+<deck-stage width="1920" height="1080">
+
+  <!-- 1 · TITLE -->
+  <section data-label="표지" class="slide cover">
+    <div class="wrap">
+      <div class="glow"></div>
+      <div class="ash"></div>
+      <div class="greek-bg">ΠΟΡΦ</div>
+      <div class="kicker anim" style="letter-spacing: .06em; font-size: 30px">입자가속기와 과학기술의 발전 : 전자부터 빅데이터까지</div>
+      <h1 class="anim" style="--i:1; font-size:84px; line-height:1.28"><span style="color:var(--accent-2)">방사광 가속기</span>와 AI로 읽는<br />2000년 전 두루마리</h1>
+      <p class="sub anim" style="--i:2">펴지 않고 읽는 법 — 빛에서 글자까지</p>
+    </div>
+    <div class="meta">
+      <span style="font-size: 35px">컴퓨터소프트웨어학과 2022270624 가동진</span>
+    </div>
+  </section>
+
+  <!-- 2 · 유물 -->
+  <section data-label="유물" class="slide">
+    <div class="head"><span class="eyb"><span class="num">01</span> &nbsp;유물 · AD 79</span><span class="rule"></span></div>
+    <div class="main">
+      <div class="cols" style="grid-template-columns:1fr 760px;">
+        <div>
+          <h2 class="title anim">헤르쿨라네움의<br />숯덩이 책</h2>
+          <ul class="facts anim" style="--i:1; margin-top:var(--gap-title);">
+            <li><span>베수비오 화산이 별장 도서관을 통째로 묻다<span class="sub" style="font-size: 30px">초고온 화쇄류가 산소 없이 순식간에 탄화시킴</span></span></li>
+            <li><span>새까만 숯덩이로 굳은 파피루스 두루마리<span class="sub" style="font-size: 30px">고대에서 통째로 살아남은 유일한 도서관</span></span></li>
+            <li><span>펴려고 하면 그대로 바스러진다<span class="sub" style="font-size: 30px">물리적으로 펼치는 시도마다 원문이 소실</span></span></li>
+          </ul>
+        </div>
+        <image-slot id="scroll" class="anim" style="--i:2; width:760px; height:560px; border-radius:6px;"
+          src="scroll.webp" shape="rounded" radius="6" placeholder="탄화 두루마리 사진을 끌어다 놓기 (탄화 파피루스 / 헤르쿨라네움)"></image-slot>
+      </div>
+    </div>
+    <div class="foot"><span class="src"></span><span class="pg">02 / 10</span></div>
+  </section>
+
+  <!-- 3 · 문제 -->
+  <section data-label="문제" class="slide">
+    <div class="head"><span class="eyb"><span class="num">02</span> &nbsp;문제</span><span class="rule"></span></div>
+    <div class="main">
+      <h2 class="title anim">두 개의 벽</h2>
+      <div class="cols anim" style="--i:1; grid-template-columns:1fr 1fr; gap:56px; flex:0 0 auto; margin-top:var(--gap-title);">
+        <div>
+          <div style="font-size:var(--type-subtitle); font-weight:600; line-height:1.35;">만지면 부서진다</div>
+          <p class="lead" style="font-size:var(--type-body); margin-top:16px;">탄화된 두루마리는 펼치는 순간 가루가 된다. 손대지 않고 읽어야 한다.</p>
+        </div>
+        <div>
+          <div style="font-size:var(--type-subtitle); font-weight:600; line-height:1.35;">탄소 잉크 = 탄소 종이</div>
+          <p class="lead" style="font-size:var(--type-body); margin-top:16px;">그을음 잉크와 탄화 종이는 밀도가 같다. 일반 X선엔 그림자 차이가 없다.</p>
+        </div>
+      </div>
+      <div class="anim" style="--i:2; margin-top:44px;">
+        <svg class="dg" viewBox="0 0 1700 230" style="height:230px;" preserveAspectRatio="xMidYMid meet">
+          <!-- left: normal ink, contrast -->
+          <g transform="translate(40,20)">
+            <text class="lbl" x="0" y="0" style="stroke-width: 2px">일반 잉크 — X선 밀도 단면</text>
+            <rect x="0" y="20" width="640" height="86" rx="4" fill="#221c17" stroke="rgba(236,231,223,.18)"/>
+            <rect x="250" y="20" width="60" height="86" fill="rgba(236,231,223,.62)"/>
+            <rect x="430" y="20" width="44" height="86" fill="rgba(236,231,223,.62)"/>
+            <polyline class="s-acc draw" style="--len:680" fill="none" stroke-width="2.5"
+              points="0,170 250,170 250,128 310,128 310,170 430,170 430,134 474,134 474,170 640,170"/>
+            <text class="lbl" x="262" y="200" fill="var(--accent)">대비 있음 → 글자 보임</text>
+          </g>
+          <line x1="850" y1="30" x2="850" y2="206" stroke="rgba(236,231,223,.14)"/>
+          <!-- right: carbon ink, no contrast -->
+          <g transform="translate(1020,20)">
+            <text class="lbl" x="0" y="0">탄소 잉크 — X선 밀도 단면</text>
+            <rect x="0" y="20" width="640" height="86" rx="4" fill="#221c17" stroke="rgba(236,231,223,.18)"/>
+            <rect x="250" y="20" width="60" height="86" fill="rgba(236,231,223,.30)"/>
+            <rect x="430" y="20" width="44" height="86" fill="rgba(236,231,223,.30)"/>
+            <line class="s-emb draw" style="--len:660" stroke-width="2.5" x1="0" y1="170" x2="640" y2="170"/>
+            
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="foot"><span class="src"></span><span class="pg">03 / 10</span></div>
+  </section>
+
+  <!-- 4 · 전략 / 파이프라인 -->
+  <section data-label="전략" class="slide">
+    <div class="head"><span class="eyb"><span class="num">03</span> &nbsp;전략</span><span class="rule"></span></div>
+    <div class="main">
+      <h2 class="title anim">펴지 말고, 빛으로</h2>
+      <p class="lead anim" style="--i:1; margin-top:24px; max-width:34em;">두루마리를 펼치지 않는다. <span style="color:var(--ink)">가속기의 빛으로 속을 들여다보고, 컴퓨터 안에서 가상으로 펴서, AI로 읽는다.</span></p>
+      <div class="anim" style="--i:2; margin-top:56px;">
+        <svg class="dg" viewBox="0 0 1680 300" style="height:300px;" preserveAspectRatio="xMidYMid meet">
+          <defs><marker id="ah" markerWidth="11" markerHeight="11" refX="8" refY="5.5" orient="auto">
+            <path d="M0,0 L9,5.5 L0,11" fill="none" stroke="var(--ember)" stroke-width="1.8"/></marker></defs>
+          <!-- connectors -->
+          <line x1="372" y1="120" x2="468" y2="120" class="s-emb" stroke-width="2" marker-end="url(#ah)"/>
+          <line x1="792" y1="120" x2="888" y2="120" class="s-emb" stroke-width="2" marker-end="url(#ah)"/>
+          <line x1="1212" y1="120" x2="1308" y2="120" class="s-emb" stroke-width="2" marker-end="url(#ah)"/>
+          <!-- node 1 빛 -->
+          <g transform="translate(40,20)">
+            <circle cx="160" cy="100" r="92" fill="var(--bg-2)" stroke="var(--accent)" stroke-width="1.5"/>
+            <circle cx="160" cy="100" r="26" class="f-acc"/>
+            <g class="s-acc" stroke-width="2.4">
+              <line x1="160" y1="40" x2="160" y2="58"/><line x1="160" y1="142" x2="160" y2="160"/>
+              <line x1="100" y1="100" x2="118" y2="100"/><line x1="202" y1="100" x2="220" y2="100"/>
+              <line x1="118" y1="58" x2="131" y2="71"/><line x1="189" y1="129" x2="202" y2="142"/>
+              <line x1="202" y1="58" x2="189" y2="71"/><line x1="131" y1="129" x2="118" y2="142"/>
+            </g>
+            <text class="lblk" x="160" y="246" text-anchor="middle" font-size="28">① 방사광</text>
+            <text class="lbl" x="160" y="278" text-anchor="middle">가속기의 빛</text>
+          </g>
+          <!-- node 2 3D -->
+          <g transform="translate(460,20)">
+            <circle cx="160" cy="100" r="92" fill="var(--bg-2)" stroke="var(--accent)" stroke-width="1.5"/>
+            <g transform="translate(160,100)" class="s-acc" stroke-width="2.2" fill="none">
+              <path d="M-34,-20 L0,-40 L34,-20 L34,22 L0,42 L-34,22 Z"/>
+              <path d="M-34,-20 L0,0 L34,-20 M0,0 L0,42"/>
+            </g>
+            <text class="lblk" x="160" y="246" text-anchor="middle" font-size="28">② 단층촬영</text>
+            <text class="lbl" x="160" y="278" text-anchor="middle">속을 3D로</text>
+          </g>
+          <!-- node 3 펴기 -->
+          <g transform="translate(880,20)">
+            <circle cx="160" cy="100" r="92" fill="var(--bg-2)" stroke="var(--accent)" stroke-width="1.5"/>
+            <g transform="translate(160,100)" class="s-acc" stroke-width="2.2" fill="none">
+              <path d="M30,-34 A34,34 0 1 0 38,2" />
+              <path d="M30,-34 L52,-34 M52,30 L-44,30"/>
+            </g>
+            <text class="lblk" x="160" y="246" text-anchor="middle" font-size="28">③ 가상 전개</text>
+            <text class="lbl" x="160" y="278" text-anchor="middle">한 겹씩 펴기</text>
+          </g>
+          <!-- node 4 판독 -->
+          <g transform="translate(1300,20)">
+            <circle cx="160" cy="100" r="92" fill="var(--bg-2)" stroke="var(--accent)" stroke-width="1.5"/>
+            <g transform="translate(160,100)" class="s-acc" stroke-width="2.2" fill="none">
+              <line x1="-40" y1="-22" x2="40" y2="-22"/><line x1="-40" y1="-2" x2="28" y2="-2"/>
+              <line x1="-40" y1="18" x2="40" y2="18"/><line x1="-40" y1="38" x2="16" y2="38"/>
+            </g>
+            <text class="lblk" x="160" y="246" text-anchor="middle" font-size="28">④ AI 판독</text>
+            <text class="lbl" x="160" y="278" text-anchor="middle">글자 읽기</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="foot"><span class="src"></span><span class="pg">04 / 10</span></div>
+  </section>
+
+  <!-- 5 · 빛 -->
+  <section data-label="① 방사광" class="slide">
+    <div class="head"><span class="eyb"><span class="num">04</span> &nbsp;① 빛</span><span class="rule"></span>
+      <div class="steps"><span class="st on"><span class="dot"></span>빛</span><span class="sep"></span><span class="st"><span class="dot"></span>3D</span><span class="sep"></span><span class="st"><span class="dot"></span>펴기</span><span class="sep"></span><span class="st"><span class="dot"></span>판독</span></div>
+    </div>
+    <div class="main">
+      <div class="cols" style="grid-template-columns:1fr 1fr; gap:56px;">
+        <div>
+          <h2 class="title anim">방사광:<br />가속기의 빛</h2>
+          <p class="lead anim" style="--i:1; font-size:var(--type-body); margin-top:30px; max-width:24em;">전자를 광속 가까이 돌리다가 자석으로 진로를 꺾으면, 접선 방향으로 강한 X선이 쏟아진다.</p>
+          <div class="chips anim" style="--i:2; margin-top:40px; flex-wrap:wrap; gap:16px;">
+            <span class="chip">밝기 <b>병원 X선 ×10⁹</b></span>
+            <span class="chip">결 <b>부분 정렬</b></span>
+            <span class="chip">색 <b>단색 선택</b></span>
+          </div>
+          <p class="anim" style="--i:3; font-family:var(--mono); font-size:var(--type-small); color:var(--muted); margin-top:34px; line-height:1.6;">손전등(제멋대로) · 레이저(완전 정렬) · <span style="color:var(--accent)">방사광(그 사이, 밝고 고름)</span></p>
+        </div>
+        <div class="anim" style="--i:2;">
+          <svg class="dg" viewBox="0 0 720 520" style="height:520px;" preserveAspectRatio="xMidYMid meet">
+            <defs><marker id="ah2" markerWidth="12" markerHeight="12" refX="8" refY="5.5" orient="auto">
+              <path d="M0,0 L9,5.5 L0,11" fill="none" stroke="var(--ember)" stroke-width="2"/></marker></defs>
+            <!-- storage ring -->
+            <circle cx="250" cy="260" r="180" fill="none" class="s-line" stroke-width="2"/>
+            <circle cx="250" cy="260" r="180" fill="none" class="s-acc draw" style="--len:1131" stroke-width="2.5" stroke-dasharray="1131" opacity=".9"/>
+            <text class="lbl" x="250" y="266" text-anchor="middle">원형 저장링</text>
+            <!-- electron -->
+            <circle cx="430" cy="260" r="9" class="f-emb"/>
+            <path d="M430,210 A50,50 0 0 1 430,210" />
+            <path d="M398,150 A180,180 0 0 1 446,196" fill="none" class="s-emb" stroke-width="2.4" marker-end="url(#ah2)"/>
+            <text class="lbl" x="300" y="120" fill="var(--ember)">전자 ≈ 광속</text>
+            <!-- bending magnet -->
+            <rect x="416" y="238" width="40" height="44" rx="3" fill="var(--accent-soft)" class="s-acc" stroke-width="1.5"/>
+            <text class="lbl" x="436" y="318" text-anchor="middle">편향 자석</text>
+            <!-- tangent x-ray -->
+            <line x1="448" y1="252" x2="660" y2="200" class="s-acc draw" style="--len:220" stroke-width="3" marker-end="url(#ah2)"/>
+            <text class="lblk" x="556" y="168" text-anchor="middle" font-size="28" fill="var(--accent)">접선 X선</text>
+            <!-- sample -->
+            <rect x="612" y="196" width="14" height="80" rx="3" class="f-faint"/>
+            <text class="lbl" x="619" y="300" text-anchor="middle">시료</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+    <div class="foot"><span class="src"></span><span class="pg">05 / 10</span></div>
+  </section>
+
+  <!-- 6 · 3D -->
+  <section data-label="② 단층촬영" class="slide">
+    <div class="head"><span class="eyb"><span class="num">05</span> &nbsp;② 3D</span><span class="rule"></span>
+      <div class="steps"><span class="st"><span class="dot"></span>빛</span><span class="sep"></span><span class="st on"><span class="dot"></span>3D</span><span class="sep"></span><span class="st"><span class="dot"></span>펴기</span><span class="sep"></span><span class="st"><span class="dot"></span>판독</span></div>
+    </div>
+    <div class="main">
+      <h2 class="title anim">단층촬영으로 속을 3D로</h2>
+      <p class="lead anim" style="--i:1; font-size:var(--type-body); margin-top:22px; max-width:40em;">조금씩 돌려 가며 수천 장을 찍고 거꾸로 계산하면, 자르지 않고도 내부가 입체로 복원된다 — 밀도 지도(복셀).</p>
+      <div class="anim" style="--i:2; margin-top:40px;">
+        <svg class="dg" viewBox="0 0 1680 400" style="height:400px;" preserveAspectRatio="xMidYMid meet">
+          <defs><marker id="ah3" markerWidth="12" markerHeight="12" refX="8" refY="5.5" orient="auto">
+            <path d="M0,0 L9,5.5 L0,11" fill="none" stroke="var(--ember)" stroke-width="2"/></marker></defs>
+          <!-- rotating scan -->
+          <g transform="translate(220,180)">
+            <circle r="92" fill="none" class="s-line" stroke-width="1.5" stroke-dasharray="5 8"/>
+            <circle r="46" fill="var(--bg-2)" class="s-mut" stroke-width="1.5"/>
+            <g class="s-acc" stroke-width="2.2" marker-end="url(#ah3)">
+              <line x1="-150" y1="-70" x2="-60" y2="-28"/>
+              <line x1="-160" y1="0" x2="-58" y2="0"/>
+              <line x1="-150" y1="70" x2="-60" y2="28"/>
+            </g>
+            <path d="M70,-60 A92,92 0 0 1 70,60" fill="none" class="s-emb" stroke-width="2.2" marker-end="url(#ah3)"/>
+            <text class="lbl" x="0" y="150" text-anchor="middle">여러 각도 투영 + 회전</text>
+          </g>
+          <line x1="430" y1="180" x2="560" y2="180" class="s-emb" stroke-width="2" marker-end="url(#ah3)"/>
+          <text class="lbl" x="495" y="160" text-anchor="middle">재구성</text>
+          <!-- voxel cube -->
+          <g transform="translate(720,70)">
+            <g class="s-acc" stroke-width="1.6" fill="none">
+              <path d="M120,40 L240,90 L240,210 L120,260 L0,210 L0,90 Z" fill="var(--accent-soft)"/>
+              <path d="M0,90 L120,140 L240,90 M120,140 L120,260"/>
+              <path d="M40,108 L160,158 M80,126 L200,176 M0,150 L120,200 M0,170 L120,220
+                       M120,140 L40,108 M120,180 L40,148 M160,158 L160,238 M80,178 L80,238" opacity=".5"/>
+            </g>
+            <text class="lblk" x="120" y="300" text-anchor="middle" font-size="28" fill="var(--ink)">3D 밀도지도 · 복셀</text>
+          </g>
+          <!-- callout -->
+          <g transform="translate(1140,110)">
+            <line x1="0" y1="70" x2="-40" y2="70" class="s-line" stroke-width="1.5"/>
+            <text class="lblk" x="20" y="40" font-size="56" fill="var(--ember)">≈ 8 μm</text>
+            <text class="lbl" x="22" y="84">복셀 한 점</text>
+            <text class="lbl" x="22" y="116">머리카락 굵기의 1/10</text>
+            <text class="lbl" x="22" y="160" fill="var(--accent)">이 해상도가 방사광의 밝기에서 나온다</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="foot"><span class="src"></span><span class="pg">06 / 10</span></div>
+  </section>
+
+  <!-- 7 · 펴기 -->
+  <section data-label="③ 가상 전개" class="slide">
+    <div class="head"><span class="eyb"><span class="num">06</span> &nbsp;③ 전개</span><span class="rule"></span>
+      <div class="steps"><span class="st"><span class="dot"></span>빛</span><span class="sep"></span><span class="st"><span class="dot"></span>3D</span><span class="sep"></span><span class="st on"><span class="dot"></span>펴기</span><span class="sep"></span><span class="st"><span class="dot"></span>판독</span></div>
+    </div>
+    <div class="main">
+      <h2 class="title anim">한 겹씩 가상으로 펴기</h2>
+      <p class="lead anim" style="--i:1; font-size:var(--type-body); margin-top:22px; max-width:42em;">단면은 나이테처럼 동심원. 한 층의 곡면을 따라가 떠내고(면 추적), 다림질하듯 평평하게 편다.</p>
+      <div class="anim" style="--i:2; margin-top:34px;">
+        <svg class="dg" viewBox="0 0 1680 380" style="height:380px;" preserveAspectRatio="xMidYMid meet">
+          <defs><marker id="ah4" markerWidth="12" markerHeight="12" refX="8" refY="5.5" orient="auto">
+            <path d="M0,0 L9,5.5 L0,11" fill="none" stroke="var(--ember)" stroke-width="2"/></marker></defs>
+          <!-- concentric -->
+          <g transform="translate(180,170)">
+            <circle r="40" fill="none" class="s-mut" stroke-width="1.6"/>
+            <circle r="70" fill="none" class="s-mut" stroke-width="1.6"/>
+            <circle r="100" fill="none" class="s-acc" stroke-width="3"/>
+            <circle r="130" fill="none" class="s-mut" stroke-width="1.6"/>
+            <circle r="158" fill="none" class="s-mut" stroke-width="1.6"/>
+            <g class="f-acc">
+              <circle cx="100" cy="0" r="4"/><circle cx="71" cy="71" r="4"/><circle cx="0" cy="100" r="4"/>
+              <circle cx="-71" cy="71" r="4"/><circle cx="-100" cy="0" r="4"/><circle cx="-71" cy="-71" r="4"/>
+              <circle cx="0" cy="-100" r="4"/><circle cx="71" cy="-71" r="4"/>
+            </g>
+            <text class="lbl" x="0" y="205" text-anchor="middle">동심원 단면 + 한 층 추적</text>
+          </g>
+          <line x1="380" y1="170" x2="500" y2="170" class="s-emb" stroke-width="2" marker-end="url(#ah4)"/>
+          <!-- lifted strip -->
+          <g transform="translate(560,60)">
+            <path d="M20,40 C90,-10 190,-10 260,40 C190,90 90,90 20,40 Z" fill="var(--accent-soft)" class="s-acc" stroke-width="2"/>
+            <path d="M20,150 C90,100 190,100 260,150 C190,200 90,200 20,150 Z" fill="none" class="s-mut" stroke-width="1.5"/>
+            <text class="lbl" x="140" y="250" text-anchor="middle">떠낸 곡면(segmentation)</text>
+          </g>
+          <line x1="900" y1="170" x2="1020" y2="170" class="s-emb" stroke-width="2" marker-end="url(#ah4)"/>
+          <text class="lbl" x="960" y="150" text-anchor="middle">flatten</text>
+          <!-- flat sheet -->
+          <g transform="translate(1080,90)">
+            <rect x="0" y="0" width="520" height="160" rx="4" fill="var(--bg-2)" class="s-acc" stroke-width="1.6"/>
+            <g class="s-line" stroke-width="6" stroke-linecap="round">
+              <line x1="34" y1="40" x2="486" y2="40"/><line x1="34" y1="80" x2="430" y2="80"/><line x1="34" y1="120" x2="486" y2="120"/>
+            </g>
+            <text class="lbl" x="260" y="210" text-anchor="middle">평평하게 펼친 한 장</text>
+          </g>
+        </svg>
+      </div>
+      <p class="anim" style="--i:3; font-family:var(--mono); font-size:var(--type-small); color:var(--ember); margin-top:40px; line-height:1.6;">⚠ 최난관: 눌어붙은 층 분리는 빛이 아니라 컴퓨터가 면을 따라가며 푸는 작업 · 방사광의 위상 정보는 '형태'를 또렷이 할 뿐 글자를 보여 주진 않는다</p>
+    </div>
+    <div class="foot"><span class="src"></span><span class="pg">07 / 10</span></div>
+  </section>
+
+  <!-- 8 · 판독 -->
+  <section data-label="④ AI 판독" class="slide">
+    <div class="head"><span class="eyb"><span class="num">07</span> &nbsp;④ 판독</span><span class="rule"></span>
+      <div class="steps"><span class="st"><span class="dot"></span>빛</span><span class="sep"></span><span class="st"><span class="dot"></span>3D</span><span class="sep"></span><span class="st"><span class="dot"></span>펴기</span><span class="sep"></span><span class="st on"><span class="dot"></span>판독</span></div>
+    </div>
+    <div class="main">
+      <h2 class="title anim">AI가 잉크를 읽다</h2>
+      <p class="lead anim" style="--i:1; font-size:var(--type-body); margin-top:22px; max-width:42em;">밝기로는 여전히 안 보인다. 잉크가 남긴 미세한 균열(crackle) 질감을 AI가 패턴으로 학습해 글자를 짚어낸다.</p>
+      <div class="anim" style="--i:2; margin-top:36px;">
+        <svg class="dg" viewBox="0 0 1680 320" style="height:320px;" preserveAspectRatio="xMidYMid meet">
+          <defs><marker id="ah5" markerWidth="12" markerHeight="12" refX="8" refY="5.5" orient="auto">
+            <path d="M0,0 L9,5.5 L0,11" fill="none" stroke="var(--ember)" stroke-width="2"/></marker></defs>
+          <!-- flat gray -->
+          <g transform="translate(40,90)">
+            <rect width="300" height="150" rx="5" fill="rgba(236,231,223,.16)"/>
+            <text class="lbl" x="150" y="190" text-anchor="middle">평탄한 회색면</text>
+            <text class="lbl" x="150" y="220" text-anchor="middle" fill="var(--ember)">밝기 대비 = 0</text>
+          </g>
+          <line x1="360" y1="165" x2="460" y2="165" class="s-emb" stroke-width="2" marker-end="url(#ah5)"/>
+          <!-- crackle -->
+          <g transform="translate(480,90)">
+            <rect width="300" height="150" rx="5" fill="var(--bg-2)" class="s-line" stroke-width="1.4"/>
+            <g class="s-acc" stroke-width="1.8" fill="none" stroke-linecap="round">
+              <path d="M40,40 L70,62 L60,92 M70,62 L104,58"/>
+              <path d="M150,36 L138,70 L168,90 M138,70 L112,84"/>
+              <path d="M214,50 L242,72 L232,104 M242,72 L268,64"/>
+              <path d="M70,112 L96,128 M180,110 L208,126 M120,120 L150,116"/>
+            </g>
+            <text class="lbl" x="150" y="190" text-anchor="middle">미세 균열 질감</text>
+            <text class="lbl" x="150" y="220" text-anchor="middle" fill="var(--accent)">crackle 패턴</text>
+          </g>
+          <line x1="800" y1="165" x2="900" y2="165" class="s-emb" stroke-width="2" marker-end="url(#ah5)"/>
+          <!-- neural net -->
+          <g transform="translate(920,70)">
+            <g class="f-mut"><circle cx="20" cy="40" r="9"/><circle cx="20" cy="100" r="9"/><circle cx="20" cy="160" r="9"/></g>
+            <g class="f-acc"><circle cx="140" cy="20" r="9"/><circle cx="140" cy="80" r="9"/><circle cx="140" cy="140" r="9"/><circle cx="140" cy="200" r="9"/></g>
+            <g class="f-mut"><circle cx="260" cy="60" r="9"/><circle cx="260" cy="140" r="9"/></g>
+            <g class="s-line" stroke-width="1">
+              <line x1="20" y1="40" x2="140" y2="20"/><line x1="20" y1="40" x2="140" y2="80"/><line x1="20" y1="40" x2="140" y2="140"/>
+              <line x1="20" y1="100" x2="140" y2="80"/><line x1="20" y1="100" x2="140" y2="140"/><line x1="20" y1="100" x2="140" y2="200"/>
+              <line x1="20" y1="160" x2="140" y2="80"/><line x1="20" y1="160" x2="140" y2="140"/>
+              <line x1="140" y1="20" x2="260" y2="60"/><line x1="140" y1="80" x2="260" y2="60"/><line x1="140" y1="140" x2="260" y2="140"/><line x1="140" y1="200" x2="260" y2="140"/>
+            </g>
+            <text class="lbl" x="140" y="252" text-anchor="middle">신경망 판독</text>
+          </g>
+          <line x1="1240" y1="165" x2="1340" y2="165" class="s-emb" stroke-width="2" marker-end="url(#ah5)"/>
+          <!-- letters -->
+          <g transform="translate(1360,90)">
+            <rect width="280" height="150" rx="5" fill="var(--bg-2)" class="s-acc" stroke-width="1.5"/>
+            <text x="140" y="100" text-anchor="middle" font-family="var(--serif)" font-size="64" fill="var(--accent-2)" style="font-weight:600;">ΠΟΡ</text>
+            <text class="lbl" x="140" y="190" text-anchor="middle" fill="var(--accent)">글자 출현</text>
+          </g>
+        </svg>
+      </div>
+      <p class="anim" style="--i:3; font-family:var(--mono); font-size:var(--type-small); color:var(--muted); margin-top:40px; line-height:1.6;">정리: <span style="color:var(--accent)">가속기는 흔적까지 데이터로 남기고, 글자를 읽는 건 AI</span> · AI가 정확히 어떤 신호를 보는지는 아직 열린 질문</p>
+    </div>
+    <div class="foot"><span class="src"></span><span class="pg">08 / 10</span></div>
+  </section>
+
+  <!-- 9 · 결과 -->
+  <section data-label="결과" class="slide">
+    <div class="head"><span class="eyb"><span class="num">08</span> &nbsp;결과 · 공개 경쟁</span><span class="rule"></span></div>
+    <div class="main">
+      <div class="cols" style="grid-template-columns:1.12fr 1fr; gap:60px; flex:0 0 auto; align-items:center;">
+        <div class="anim">
+          <img src="porphyras-detection.jpg" alt="ΠΟΡΦΥΡΑΣ 잉크 검출 결과" style="width:100%; display:block; border-radius:8px; border:1px solid var(--line);" />
+          <div style="font-size:var(--type-small); color:var(--faint); margin-top:18px; line-height:1.5;">첫 단어: <b style="color:var(--accent-2); font-weight:700;">ΠΟΡΦΥΡΑΣ</b> — "자주색(porphyras)" · 보라색 박스 = AI가 인식한 각 글자 위치</div>
+          <div style="font-size:var(--type-small); color:var(--muted); opacity:.65; margin-top:10px;">이미지: Vesuvius Challenge (scrollprize.org)</div>
+        </div>
+        <div class="anim" style="--i:1;">
+          <p style="font-size:var(--type-subtitle); font-weight:600; line-height:1.35; margin:0;">Vesuvius Challenge</p>
+          <p class="lead" style="font-size:var(--type-body); margin-top:18px;">스캔 데이터를 공개하고 현상금을 걸어, 전 세계 연구자가 두루마리를 읽는 공개 경쟁으로 진행됐다.</p>
+        </div>
+      </div>
+
+      <div class="tl anim" style="--i:3; margin-top:44px;">
+        <div class="it"><div class="yr">2023</div><div class="ev">첫 단어 ‘자주색’<small>봉인된 두루마리에서 단어 판독</small></div></div>
+        <div class="it"><div class="yr">2024</div><div class="ev">두루마리 약 5% 복원<small>철학자 필로데모스의 새 텍스트</small></div></div>
+        <div class="it"><div class="yr">2025</div><div class="ev">PHerc.172 제목·저자 규명<small>필로데모스 『악덕에 관하여』 · 약 70% 복원</small></div></div>
+      </div>
+    </div>
+    <div class="foot"><span class="src"></span><span class="pg">09 / 10</span></div>
+  </section>
+
+  <!-- 10 · 마무리 -->
+  <section data-label="마무리" class="slide">
+    <div class="head"><span class="eyb"><span class="num">09</span> &nbsp;마무리</span><span class="rule"></span></div>
+    <div class="main">
+      <div class="chain anim" style="--i:1; margin-top:0;">
+        <div class="node">숯덩이<small>탄화 두루마리</small></div>
+        <span class="arr">→</span>
+        <div class="node">빛<small>방사광 X선</small></div>
+        <span class="arr">→</span>
+        <div class="node">데이터<small>3D 복셀 · 전개</small></div>
+        <span class="arr">→</span>
+        <div class="node">AI<small>잉크 판독</small></div>
+        <span class="arr">→</span>
+        <div class="node fin">ΠΟΡΦΥΡΑΣ</div>
+      </div>
+      <p class="anim" style="--i:2; font-size:var(--type-body); color:var(--muted); text-align:center; margin-top:48px;">방사광 <span style="color:var(--accent-2); font-weight:600;">가속기</span>의 빛이 데이터를 만들고, AI가 그 데이터에서 글자를 읽는다.</p>
+    </div>
+    <div class="foot"><span class="src">before/after: Vesuvius Challenge / Bodleian Libraries, Oxford University</span><span class="pg">10 / 10</span></div>
+  </section>
+
+</deck-stage>
+
+<template id="__bundler_thumbnail">
+  <svg viewBox="0 0 1200 750" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="750" fill="#15120f"/>
+    <circle cx="600" cy="375" r="210" fill="none" stroke="#b57edc" stroke-width="10" opacity=".5"/>
+    <text x="600" y="345" text-anchor="middle" font-family="Georgia,serif" font-size="120" fill="#c9a3e8" font-weight="700">ΠΟΡΦ</text>
+    <text x="600" y="470" text-anchor="middle" font-family="sans-serif" font-size="56" fill="#ece7df" font-weight="700">불탄 도서관을 깨우다</text>
+  </svg>
+</template>
+
+<script src="deck-stage.js"></script>
+<script src="image-slot.js"></script>
+<script>
+  // If no entrance animation has progressed shortly after load, the timeline is
+  // frozen (inactive tab / capture) — fall back to the fully-revealed resting state.
+  setTimeout(function(){
+    var prog = false;
+    document.querySelectorAll('.anim').forEach(function(el){
+      el.getAnimations().forEach(function(a){ if(a.currentTime > 0) prog = true; });
+    });
+    if(!prog) document.documentElement.classList.add('reveal-now');
+  }, 650);
+</script>
+</body>
+</html>
