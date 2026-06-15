@@ -1,7 +1,5 @@
 # 방사광 가속기와 AI로 읽는 2000년 전 두루마리
 
-## 보기
-
 GitHub Pages: https://dongjinka.github.io/2026-particle-accelerator/
 
 로컬에서는 정적 서버로 열어야 한다(`image-slot`이 fetch를 사용하므로 `file://` 직접 열기는 일부 자산이 제한될 수 있음).
